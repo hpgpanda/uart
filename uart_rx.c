@@ -9,20 +9,16 @@
 #include <termios.h>
 #include <sys/select.h>
 
-
-#define TTY_STR "abcded123456"
-
 int main(int argc, char **argv)
 {
     int tty_fd =-1;		//tty device node
     int rv =-1;			//
+    char r_buf[128];		//uart receive buffer
     struct termios options;	//uart attribute
-
-    char t_buf[128];		//uart send buffer
+    fd_set rset;		//
 
 
     tty_fd =open("/dev/ttyUSB0", O_RDWR|O_NOCTTY|O_NDELAY);  	//OPEN TTY DEVICE
-
     if(tty_fd <0)
     {
 	printf("open tty device failed: %s\n", strerror(errno));
@@ -41,7 +37,6 @@ int main(int argc, char **argv)
 	exit(0);
     }
 
-    // set tty options	
     options.c_cflag|=(CLOCAL|CREAD);	//CREAD: Enable uart receiver
     					//CLOCAL: ignore moderm control
     //set tty databits 
@@ -72,7 +67,9 @@ int main(int argc, char **argv)
 
     while(1)
     {
-	rv = write(tty_fd, TTY_STR, strlen(TTY_STR));	//send data
+	FD_ZERO(&rset);
+	FD_SET(tty_fd, &rset);
+	rv = select(tty_fd+1, &rset, NULL, NULL, NULL);
 	
 	if(rv <0)
 	{
@@ -80,8 +77,24 @@ int main(int argc, char **argv)
 	    close(tty_fd);
 	    exit(0);
 	}
+	if(rv ==0)
+	{
+	    printf("select() time out!\n");
+	    close(tty_fd);
+	    exit(0);
+	}
 
-	sleep(3);
+	memset(r_buf, 0, sizeof(r_buf));
+	rv = read(tty_fd, r_buf, sizeof(r_buf));
+	
+	if(rv <0)
+	{
+	    printf("Read() error:%s\n", strerror(errno));
+	    close(tty_fd);
+	    exit(0);
+	}
+	
+	printf("Read from tty: %s\n", r_buf);
     }
 
 
