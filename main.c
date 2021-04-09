@@ -5,6 +5,8 @@
 
 #define CHAR_TO_UPPER(ch)   ((ch >= 'a' && ch <= 'z')?(ch-0x20):ch)
 
+void PrintHelp(char *prog);
+
 //#define _Debug 1
 
 int main(int argc, char* argv[])
@@ -18,39 +20,48 @@ int main(int argc, char* argv[])
     if(argc <2)
     	PrintHelp(argv[0]);	//
 
-    while ((ch = getopt(argc, argv, "t:r:d:s:p:h?")) != -1)
+    while ((ch = getopt(argc, argv, "t:b:d:p:s:rh?")) != -1)
     {
         switch (ch)
         {
-        case 'x':
-            Ascii2Hex(optarg, ret_hex);
-        strcpy(cksum, optarg);
-        cmd=0;
-    #ifdef Debug
-        printf("x: %s\n", cksum);
-        printf("ret_hex: %s\n", ret_hex);
-    #endif
+        case 't':	// send data 
+            cmd=0;
+    	#ifdef Debug
+            printf("x: %s\n", cksum);
+            printf("ret_hex: %s\n", ret_hex);
+    	#endif
             break;
-        case 'a':
-            Hex2Ascii(optarg, ret_ascii);
-        strcpy(cksum, optarg);
-        cmd=1;
-    #ifdef Debug
-//        printf("a: %s\n", optarg);
-        printf("ret_ascii: %s\n", ret_ascii);
-    #endif
+        case 'r':	// receive data
+            cmd=1;
+    	#ifdef Debug
+//          printf("a: %s\n", optarg);
+            printf("ret_ascii: %s\n", ret_ascii);
+    	#endif
             break;
-    case 'c':
-    #ifdef Debug
-        printf("cmd: %d\n", cmd);
-        printf("cksum: %s\n", cksum);
-    #endif
-        checksum(cksum, cmd);
-        break;
-        case '?':
-    case 'h':
+    	case 'b':	// baudrate 
+    	#ifdef Debug
+    	
+	#endif
+            break;
+    	case 'd':	// data bits
+    	#ifdef Debug
+    	
+	#endif
+            break;
+    	case 'p':	// parity bits
+    	#ifdef Debug
+    	
+	#endif
+            break;
+    	case 's':	// stop bits
+    	#ifdef Debug
+    	
+	#endif
+            break;
+        case '?':	// help information
+    	case 'h':
         default:
-        PrintHelp(argv[0]);
+            PrintHelp(argv[0]);
             exit(0);
             break;
         }
@@ -60,3 +71,27 @@ int main(int argc, char* argv[])
 //    Hex2Ascii(argv[1]);
     return 1;
 }
+
+
+/****************************************************
+  * @help
+  * @par param[in]
+  * @retval: Null
+  * @retval: print help information
+****************************************************/
+void PrintHelp(char* prog)
+{
+    printf("%s usage.\n", prog);
+    printf("eg:\n");
+    printf("%s -t abcdef\n", prog);
+    printf("-t: ascii, default: abcdef, Send data\n");
+    printf("-r: Receive data\n");
+    printf("-b: set baudrate\n");
+    printf("-d: set data bits\n");
+    printf("-p: set parity btis.\n");
+    printf("-s: set stop bits.\n");
+    printf("-?: show help information\n");
+    printf("-h: show help information\n");
+}
+
+
