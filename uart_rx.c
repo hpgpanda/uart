@@ -9,7 +9,7 @@
 #include <termios.h>
 #include <sys/select.h>
 
-int main(int argc, char **argv)
+int uart_rx(int argc, char **argv)
 {
     int tty_fd =-1;		//tty device node
     int rv =-1;			//

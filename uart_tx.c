@@ -12,7 +12,7 @@
 
 #define TTY_STR "abcded123456"
 
-int main(int argc, char **argv)
+int uart_tx(int argc, char **argv)
 {
     int tty_fd =-1;		//tty device node
     int rv =-1;			//
