@@ -70,8 +70,8 @@ int main(int argc, char **argv)
 	exit(0);
     }
 
-    while(1)
-    {
+//    while(1)
+//    {
 	rv = write(tty_fd, TTY_STR, strlen(TTY_STR));	//send data
 	
 	if(rv <0)
@@ -82,7 +82,9 @@ int main(int argc, char **argv)
 	}
 
 	sleep(3);
-    }
+//    }
+    close(tty_fd);
+    return 0;
 
 
 }
